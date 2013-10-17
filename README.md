@@ -7,7 +7,7 @@ To Build:
 
 `sudo yum -y install rpmdevtools && rpmdev-setuptree`
 
-`sudo yum -y install pcre-devel `
+`sudo yum -y install pcre-devel gcc make`
 
 `wget https://raw.github.com/nmilford/rpm-haproxy/master/haproxy.spec -O ~/rpmbuild/SPECS/haproxy.spec`
 
