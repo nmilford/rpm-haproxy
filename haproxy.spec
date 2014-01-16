@@ -7,7 +7,7 @@
 # rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec
 
 %define version 1.5
-%define dev_rel dev19
+%define dev_rel dev21
 %define release 1
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
