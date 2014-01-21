@@ -11,6 +11,6 @@ To Build:
 
 `wget https://raw.github.com/nmilford/rpm-haproxy/master/haproxy.spec -O ~/rpmbuild/SPECS/haproxy.spec`
 
-`wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev19.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev19.tar.gz`
+`wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev21.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev21.tar.gz`
 
 `rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec`
