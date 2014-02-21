@@ -19,7 +19,7 @@ Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
 Source0: http://haproxy.1wt.eu/download/1.5/src/devel/%{name}-%{version}-%{dev_rel}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: pcre-devel make gcc
+BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
 
 %description
@@ -45,7 +45,7 @@ risking the system's stability.
 %define __perl_requires /bin/true
 
 %build
-%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26
+%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_OPENSSL=1
 
 %install
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
@@ -95,6 +95,9 @@ fi
 %attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
 
 %changelog
+* Fri Feb 21 2014 Chao Lin <clin@amplify.com>
+- Build with ssl support
+
 * Mon Oct 15 2013 Ilya Sukhanov <ilya@sukhanov.net>
 - add user creation
 - set up chroot dir
