@@ -8,7 +8,7 @@
 
 %define version 1.5
 %define dev_rel dev21
-%define release 1
+%{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
 Name: haproxy
