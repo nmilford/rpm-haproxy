@@ -1,14 +1,14 @@
 # To Build:
 #
 # sudo yum -y install rpmdevtools && rpmdev-setuptree
-# sudo yum -y install pcre-devel 
+# sudo yum -y install pcre-devel gcc make
 # wget https://raw.github.com/nmilford/rpm-haproxy/master/haproxy.spec -O ~/rpmbuild/SPECS/haproxy.spec
 # wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev19.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev19.tar.gz
 # rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec
 
 %define version 1.5
 %define dev_rel dev21
-%define release 1
+%{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
 Name: haproxy
@@ -19,7 +19,7 @@ Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
 Source0: http://haproxy.1wt.eu/download/1.5/src/devel/%{name}-%{version}-%{dev_rel}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: pcre-devel
+BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
 
 %description
@@ -45,24 +45,29 @@ risking the system's stability.
 %define __perl_requires /bin/true
 
 %build
-%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26
+%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_OPENSSL=1
 
 %install
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
- 
+
 %{__install} -d %{buildroot}%{_sbindir}
 %{__install} -d %{buildroot}%{_sysconfdir}/rc.d/init.d
 %{__install} -d %{buildroot}%{_sysconfdir}/%{name}
 %{__install} -d %{buildroot}%{_mandir}/man1/
+%{__install} -d %{buildroot}%{_sharedstatedir}/haproxy
 
 %{__install} -s %{name} %{buildroot}%{_sbindir}/
 %{__install} -c -m 644 examples/%{name}.cfg %{buildroot}%{_sysconfdir}/%{name}/
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %{__install} -c -m 755 doc/%{name}.1 %{buildroot}%{_mandir}/man1/
- 
+
 %clean
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
- 
+
+%pre
+/usr/sbin/groupadd -g 188 -r haproxy 2>/dev/null || :
+/usr/sbin/useradd -u 188 -g haproxy -d /var/lib/haproxy -s /sbin/nologin -r haproxy 2>/dev/null || :
+
 %post
 /sbin/chkconfig --add %{name}
 
@@ -87,7 +92,16 @@ fi
 %attr(0644,root,root) %config(noreplace) %{_sysconfdir}/%{name}/%{name}.cfg
 %attr(0755,root,root) %config %{_sysconfdir}/rc.d/init.d/%{name}
 
+%attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
+
 %changelog
+* Fri Feb 21 2014 Chao Lin <clin@amplify.com>
+- Build with ssl support
+
+* Mon Oct 15 2013 Ilya Sukhanov <ilya@sukhanov.net>
+- add user creation
+- set up chroot dir
+
 * Mon Jul 01 2013 Nathan Milford <nathan@milford.io>
 - updated to 1.5.0-dev19
 
