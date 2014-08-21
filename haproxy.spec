@@ -3,11 +3,11 @@
 # sudo yum -y install rpmdevtools && rpmdev-setuptree
 # sudo yum -y install pcre-devel gcc make
 # wget https://raw.github.com/nmilford/rpm-haproxy/master/haproxy.spec -O ~/rpmbuild/SPECS/haproxy.spec
-# wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev25.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev25.tar.gz
+# wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev26.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev26.tar.gz
 # rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec
 
 %define version 1.5
-%define dev_rel dev25
+%define dev_rel dev26
 %{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -95,6 +95,9 @@ fi
 %attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
 
 %changelog
+* Thu Aug 21 2014 Don Ky <don.d.ky@gmail.com>
+- updated to 1.5.0-dev26
+
 * Mon May 19 2014 Tim Shelton <timothy.shelton@gmail.com>
 - updated to 1.5.0-dev25
 
