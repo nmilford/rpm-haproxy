@@ -6,18 +6,17 @@
 # wget http://www.haproxy.org/download/1.5/src/haproxy-1.5.10.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5.10.tar.gz
 # rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec
 
-%define version 1.5
-%define dev_rel 10
+%define version 1.5.10
 %{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
 Name: haproxy
 Version: %{version}
-Release: %{dev_rel}.%{release}
+Release: %{release}%{?dist}
 License: GPL
 Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
-Source0: http://www.haproxy.org/download/1.5/src/%{name}-%{version}.%{dev_rel}.tar.gz
+Source0: http://www.haproxy.org/download/1.5/src/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
@@ -39,7 +38,7 @@ handle thousands of simultaneous connections on hundreds of instances without
 risking the system's stability.
 
 %prep
-%setup -n %{name}-%{version}.%{dev_rel}
+%setup -n %{name}-%{version}
 
 # We don't want any perl dependecies in this RPM:
 %define __perl_requires /bin/true
@@ -55,6 +54,10 @@ risking the system's stability.
 %{__install} -d %{buildroot}%{_sysconfdir}/%{name}
 %{__install} -d %{buildroot}%{_mandir}/man1/
 %{__install} -d %{buildroot}%{_sharedstatedir}/haproxy
+
+mkdir -p %{buildroot}/etc/haproxy/errors
+mkdir -p %{buildroot}/usr/share/haproxy
+cp examples/errorfiles/503.http %{buildroot}/etc/haproxy/errors/503.http
 
 %{__install} -s %{name} %{buildroot}%{_sbindir}/
 %{__install} -c -m 644 examples/%{name}.cfg %{buildroot}%{_sysconfdir}/%{name}/
@@ -83,6 +86,9 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %files
+/usr/share/haproxy
+/etc/haproxy/errors/503.http
+
 %defattr(-,root,root)
 %doc CHANGELOG examples/*.cfg doc/haproxy-en.txt doc/haproxy-fr.txt doc/architecture.txt doc/configuration.txt
 %doc %{_mandir}/man1/%{name}.1*
