@@ -12,7 +12,7 @@
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
 Name: haproxy
 Version: %{version}
-Release: %{release}
+Release: %{release}%{?dist}
 License: GPL
 Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
@@ -55,6 +55,10 @@ risking the system's stability.
 %{__install} -d %{buildroot}%{_mandir}/man1/
 %{__install} -d %{buildroot}%{_sharedstatedir}/haproxy
 
+mkdir -p %{buildroot}/etc/haproxy/errors
+mkdir -p %{buildroot}/usr/share/haproxy
+cp examples/errorfiles/503.http %{buildroot}/etc/haproxy/errors/503.http
+
 %{__install} -s %{name} %{buildroot}%{_sbindir}/
 %{__install} -c -m 644 examples/%{name}.cfg %{buildroot}%{_sysconfdir}/%{name}/
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
@@ -82,8 +86,11 @@ if [ "$1" -ge "1" ]; then
 fi
 
 %files
+/usr/share/haproxy
+/etc/haproxy/errors/503.http
+
 %defattr(-,root,root)
-%doc CHANGELOG TODO examples/*.cfg doc/haproxy-en.txt doc/haproxy-fr.txt doc/architecture.txt doc/configuration.txt
+%doc CHANGELOG examples/*.cfg doc/haproxy-en.txt doc/haproxy-fr.txt doc/architecture.txt doc/configuration.txt
 %doc %{_mandir}/man1/%{name}.1*
 
 %attr(0755,root,root) %{_sbindir}/%{name}
