@@ -18,7 +18,7 @@ Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
 Source0: http://haproxy.1wt.eu/download/1.5/src/devel/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
-BuildRequires: pcre-devel
+BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
 
 %description
