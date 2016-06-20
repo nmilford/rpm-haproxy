@@ -6,7 +6,7 @@
 # wget http://haproxy.1wt.eu/download/1.5/src/devel/haproxy-1.5-dev26.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5-dev26.tar.gz
 # rpmbuild -bb  ~/rpmbuild/SPECS/haproxy.spec
 
-%define version 1.5.10
+%define version 1.6.5
 %define release 1
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -16,7 +16,7 @@ Release: %{release}%{?dist}.gd
 License: GPL
 Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
-Source0: http://haproxy.1wt.eu/download/1.5/src/%{name}-%{version}.tar.gz
+Source0: http://haproxy.1wt.eu/download/1.6/src/devel/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
@@ -58,9 +58,9 @@ risking the system's stability.
 mkdir -p %{buildroot}/etc/haproxy/errors
 mkdir -p %{buildroot}/usr/share/haproxy
 cp examples/errorfiles/503.http %{buildroot}/etc/haproxy/errors/503.http
+cp examples/auth.cfg %{buildroot}/etc/haproxy/haproxy.cfg
 
 %{__install} -s %{name} %{buildroot}%{_sbindir}/
-%{__install} -c -m 644 examples/%{name}.cfg %{buildroot}%{_sysconfdir}/%{name}/
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %{__install} -c -m 755 doc/%{name}.1 %{buildroot}%{_mandir}/man1/
 
@@ -88,49 +88,147 @@ fi
 %files
 /usr/share/haproxy
 /etc/haproxy/errors/503.http
+/etc/haproxy/haproxy.cfg
 
 %defattr(-,root,root)
-%doc CHANGELOG examples/*.cfg doc/haproxy-en.txt doc/haproxy-fr.txt doc/architecture.txt doc/configuration.txt
+%doc CHANGELOG README doc/architecture.txt doc/configuration.txt doc/intro.txt doc/management.txt doc/proxy-protocol.txt
 %doc %{_mandir}/man1/%{name}.1*
 
 %attr(0755,root,root) %{_sbindir}/%{name}
 %dir %{_sysconfdir}/%{name}
-%attr(0644,root,root) %config(noreplace) %{_sysconfdir}/%{name}/%{name}.cfg
 %attr(0755,root,root) %config %{_sysconfdir}/rc.d/init.d/%{name}
 
 %attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
 
 %changelog
-* Thu Aug 21 2014 Don Ky <don.d.ky@gmail.com>
-- updated to 1.5.0-dev26
+* Tue May 10 2016 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.5
 
-* Mon May 19 2014 Tim Shelton <timothy.shelton@gmail.com>
-- updated to 1.5.0-dev25
+* Mon Mar 14 2016 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.4
 
-* Fri Mar 05 2014 Ilya Sukhanov <ilya@sukhanov.net>
-- updated to 1.5.0-dev22
+* Sun Dec 27 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.3
 
-* Fri Feb 21 2014 Chao Lin <clin@amplify.com>
-- Build with ssl support
+* Tue Nov  3 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.2
 
-* Mon Oct 15 2013 Ilya Sukhanov <ilya@sukhanov.net>
-- add user creation
-- set up chroot dir
+* Tue Oct 20 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.1
 
-* Mon Jul 01 2013 Nathan Milford <nathan@milford.io>
-- updated to 1.5.0-dev19
+* Tue Oct 13 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6.0
 
-* Mon Nov 29 2010 Willy Tarreau <w@1wt.eu>
-- updated to 1.4.10
+* Tue Oct  6 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev7
 
-* Fri Oct 29 2010 Willy Tarreau <w@1wt.eu>
-- updated to 1.4.9
+* Mon Sep 28 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev6
 
-* Wed Jun 16 2010 Willy Tarreau <w@1wt.eu>
-- updated to 1.4.8
+* Mon Sep 14 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev5
 
-* Mon Jun  7 2010 Willy Tarreau <w@1wt.eu>
-- updated to 1.4.7
+* Sun Aug 30 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev4
+
+* Sun Aug 30 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev4
+
+* Wed Jul 22 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev3
+
+* Wed Jun 17 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev2
+
+* Wed Mar 11 2015 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev1
+
+* Thu Jun 19 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.6-dev0
+
+* Thu Jun 19 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5.0
+
+* Wed May 28 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev26
+
+* Sat May 10 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev25
+
+* Sat Apr 26 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev24
+
+* Wed Apr 23 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev23
+
+* Mon Feb  3 2014 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev22
+
+* Tue Dec 17 2013 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev21
+
+* Mon Dec 16 2013 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev20
+
+* Mon Jun 17 2013 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev19
+
+* Wed Apr  3 2013 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev18
+
+* Fri Dec 28 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev17
+
+* Mon Dec 24 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev16
+
+* Wed Dec 12 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev15
+
+* Mon Nov 26 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev14
+
+* Thu Nov 22 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev13
+
+* Mon Sep 10 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev12
+
+* Mon Jun  4 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev11
+
+* Mon May 14 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev10
+
+* Tue May  8 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev9
+
+* Mon Mar 26 2012 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev8
+
+* Sat Sep 10 2011 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev7
+
+* Fri Apr  8 2011 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev6
+
+* Tue Mar 29 2011 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev5
+
+* Sun Mar 13 2011 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev4
+
+* Thu Nov 11 2010 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev3
+
+* Sat Aug 28 2010 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev2
+
+* Wed Aug 25 2010 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev1
+
+* Sun May 23 2010 Willy Tarreau <w@1wt.eu>
+- updated to 1.5-dev0
 
 * Sun May 16 2010 Willy Tarreau <w@1wt.eu>
 - updated to 1.4.6
