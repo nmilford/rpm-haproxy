@@ -44,7 +44,7 @@ risking the system's stability.
 %define __perl_requires /bin/true
 
 %build
-%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_OPENSSL=1 SSL_INC=/usr/include SSL_LIB=/usr/lib ADDLIB=-ldl
+%{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_OPENSSL=1 SSL_INC=%{buildroot}/dist/install/include SSL_LIB=%{buildroot}/dist/install/lib ADDLIB=-ldl
 
 %install
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
