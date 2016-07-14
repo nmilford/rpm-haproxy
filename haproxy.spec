@@ -46,12 +46,9 @@ Requires: policycoreutils
 %description policy
 Selinux policy for haproxy when set to enforcing
 
-Source1: haproxy.te
-Source2: haproxy.pp
-
 %prep
 %setup -n %{name}-%{version}
-cp -R -p %SOURCE1 .
+cp -R -p haproxy.te .
 
 # We don't want any perl dependecies in this RPM:
 %define __perl_requires /bin/true
@@ -59,8 +56,8 @@ cp -R -p %SOURCE1 .
 %build
 %{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_ZLIB=1 USE_REGPARM=1 USE_PCRE=1  USE_OPENSSL=1 SSL_INC=/tmp/libsslbuild/include SSL_LIB=/tmp/libsslbuild/lib ADDLIB=-ldl
 
-checkmodule -M -m -o haproxy.mod %SOURCE1
-semodule_package -o %SOURCE2 -m haproxy.mod
+checkmodule -M -m -o haproxy.mod haproxy.te
+semodule_package -o haproxy.pp -m haproxy.mod
 
 
 %install
