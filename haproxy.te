@@ -11,6 +11,4 @@ require {
 #============= haproxy_t ==============
 allow haproxy_t ld_so_cache_t:file execute;
 allow haproxy_t nscd_var_run_t:file execute;
-
-#!!!! This avc can be allowed using the boolean 'cluster_use_execmem'
 allow haproxy_t self:process execmem;
