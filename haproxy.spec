@@ -78,7 +78,7 @@ cp examples/auth.cfg %{buildroot}/etc/haproxy/haproxy.cfg
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %{__install} -c -m 755 doc/%{name}.1 %{buildroot}%{_mandir}/man1/
 
-install -p -m 644 -D %{SOURCE2} \
+install -p -m 644 -D haproxy.pp \
    $RPM_BUILD_ROOT%{_datadir}/selinux/packages/haproxy/haproxy.pp
 
 %clean
