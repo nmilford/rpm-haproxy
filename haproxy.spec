@@ -48,7 +48,7 @@ Selinux policy for haproxy when set to enforcing
 
 %prep
 %setup -n %{name}-%{version}
-cp -R -p haproxy.te .
+cp -R -p %{buildroot}/haproxy.te .
 
 # We don't want any perl dependecies in this RPM:
 %define __perl_requires /bin/true
