@@ -1,0 +1,16 @@
+module haproxy 1.0;
+
+require {
+        type haproxy_t;
+        type ld_so_cache_t;
+        type nscd_var_run_t;
+        class process execmem;
+        class file execute;
+}
+
+#============= haproxy_t ==============
+allow haproxy_t ld_so_cache_t:file execute;
+allow haproxy_t nscd_var_run_t:file execute;
+
+#!!!! This avc can be allowed using the boolean 'cluster_use_execmem'
+allow haproxy_t self:process execmem;

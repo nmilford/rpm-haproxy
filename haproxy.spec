@@ -37,14 +37,31 @@ It needs very little resource. Its event-driven architecture allows it to easily
 handle thousands of simultaneous connections on hundreds of instances without
 risking the system's stability.
 
+
+%package policy
+Summary: haproxy selinux policy
+Group: System Environment/Daemons
+BuildRequires: selinux-policy-targeted
+Requires: policycoreutils
+%description policy
+Selinux policy for haproxy when set to enforcing
+
+Source0: haproxy.te
+Source1: haproxy.pp
+
 %prep
 %setup -n %{name}-%{version}
+cp -R -p %SOURCE0 .
 
 # We don't want any perl dependecies in this RPM:
 %define __perl_requires /bin/true
 
 %build
 %{__make} USE_PCRE=1 DEBUG="" ARCH=%{_target_cpu} TARGET=linux26 USE_ZLIB=1 USE_REGPARM=1 USE_PCRE=1  USE_OPENSSL=1 SSL_INC=/tmp/libsslbuild/include SSL_LIB=/tmp/libsslbuild/lib ADDLIB=-ldl
+
+checkmodule -M -m -o haproxy.mod %SOURCE0
+semodule_package -o %SOURCE1 -m haproxy.mod
+
 
 %install
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
@@ -64,6 +81,9 @@ cp examples/auth.cfg %{buildroot}/etc/haproxy/haproxy.cfg
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %{__install} -c -m 755 doc/%{name}.1 %{buildroot}%{_mandir}/man1/
 
+install -p -m 644 -D %{SOURCE1} \
+   $RPM_BUILD_ROOT%{_datadir}/selinux/packages/haproxy/haproxy.pp
+
 %clean
 [ "%{buildroot}" != "/" ] && %{__rm} -rf %{buildroot}
 
@@ -74,16 +94,28 @@ cp examples/auth.cfg %{buildroot}/etc/haproxy/haproxy.cfg
 %post
 /sbin/chkconfig --add %{name}
 
+
+%post policy
+semodule -i %{_datadir}/selinux/packages/haproxy/haproxy.pp 2>/dev/null ||:
+setsebool -P haproxy_connect_any 1
+
 %preun
 if [ $1 = 0 ]; then
   /sbin/service %{name} stop >/dev/null 2>&1 || :
   /sbin/chkconfig --del %{name}
 fi
 
+%preun policy
+semodule -r haproxy 2>/dev/null || :
+
 %postun
 if [ "$1" -ge "1" ]; then
   /sbin/service %{name} condrestart >/dev/null 2>&1 || :
 fi
+
+%postun policy
+semodule -i %{_datadir}/selinux/packages/haproxy/haproxy.pp 2>/dev/null || :
+setsebool -P haproxy_connect_any 0
 
 %files
 /usr/share/haproxy
@@ -99,6 +131,10 @@ fi
 %attr(0755,root,root) %config %{_sysconfdir}/rc.d/init.d/%{name}
 
 %attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
+
+%files policy
+%dir %{_datadir}/selinux/packages/haproxy
+%{_datadir}/selinux/packages/haproxy/haproxy.pp
 
 %changelog
 * Tue May 10 2016 Willy Tarreau <w@1wt.eu>
