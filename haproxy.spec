@@ -3,10 +3,10 @@
 # sudo yum -y install rpmdevtools && rpmdev-setuptree
 # sudo yum -y install pcre-devel gcc make
 # wget https://raw.github.com/nmilford/rpm-haproxy/master/haproxy.spec -O ~/rpmbuild/SPECS/haproxy.spec
-# wget http://www.haproxy.org/download/1.5/src/haproxy-1.5.14.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.5.14.tar.gz
+# wget http://www.haproxy.org/download/1.6/src/haproxy-1.6.9.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.6.9.tar.gz
 # rpmbuild -bb ~/rpmbuild/SPECS/haproxy.spec
 
-%define version 1.5.14
+%define version 1.6.9
 %{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -60,7 +60,6 @@ mkdir -p %{buildroot}/usr/share/haproxy
 cp examples/errorfiles/503.http %{buildroot}/etc/haproxy/errors/503.http
 
 %{__install} -s %{name} %{buildroot}%{_sbindir}/
-%{__install} -c -m 644 examples/%{name}.cfg %{buildroot}%{_sysconfdir}/%{name}/%{name}.cfg.example
 %{__install} -c -m 755 examples/%{name}.init %{buildroot}%{_sysconfdir}/rc.d/init.d/%{name}
 %{__install} -c -m 755 doc/%{name}.1 %{buildroot}%{_mandir}/man1/
 
@@ -90,17 +89,19 @@ fi
 /etc/haproxy/errors/503.http
 
 %defattr(-,root,root)
-%doc CHANGELOG examples/*.cfg doc/haproxy-en.txt doc/haproxy-fr.txt doc/architecture.txt doc/configuration.txt
+%doc CHANGELOG examples/*.cfg doc/*.txt
 %doc %{_mandir}/man1/%{name}.1*
 
 %attr(0755,root,root) %{_sbindir}/%{name}
 %dir %{_sysconfdir}/%{name}
-%attr(0644,root,root) %{_sysconfdir}/%{name}/%{name}.cfg.example
 %attr(0755,root,root) %config %{_sysconfdir}/rc.d/init.d/%{name}
 
 %attr(0755,haproxy,haproxy) %{_sharedstatedir}/haproxy
 
 %changelog
+* Wed Nov 16 2016 Hugh Mooney <hugh.mooney@gmail.com>
+- Updated to 1.6.9
+
 * Fri Jul 31 2015 Brian Hourigan <bhourigan@gmail.com>
 - updated to 1.5.14
 
