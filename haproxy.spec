@@ -6,7 +6,8 @@
 # wget http://www.haproxy.org/download/1.6/src/haproxy-1.6.9.tar.gz -O ~/rpmbuild/SOURCES/haproxy-1.6.9.tar.gz
 # rpmbuild -bb ~/rpmbuild/SPECS/haproxy.spec
 
-%define version 1.6.9
+%define base_version 1.6
+%define version %{base_version}.9
 %{!?release: %{!?release: %define release 1}}
 
 Summary: HA-Proxy is a TCP/HTTP reverse proxy for high availability environments
@@ -16,7 +17,7 @@ Release: %{release}%{?dist}
 License: GPL
 Group: System Environment/Daemons
 URL: http://haproxy.1wt.eu/
-Source0: http://www.haproxy.org/download/1.5/src/%{name}-%{version}.tar.gz
+Source0: http://www.haproxy.org/download/%{base_version}/src/%{name}-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: pcre-devel make gcc openssl-devel
 Requires: /sbin/chkconfig, /sbin/service
